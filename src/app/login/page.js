@@ -112,7 +112,7 @@ export default function Login() {
           </div>
           <div className="px-8 py-4 bg-slate-50 border-t border-slate-100 text-center">
             <p className="text-sm text-slate-600">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link href="/register" className="font-semibold text-blue-600 hover:text-blue-500 transition-colors">
                 Create an account
               </Link>

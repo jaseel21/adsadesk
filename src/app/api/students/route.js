@@ -66,34 +66,3 @@ export async function POST(req) {
     return NextResponse.json({ message: error.message }, { status: 400 });
   }
 }
-
-export async function PUT(req, { params }) {
-  await dbConnect();
-  const user = await getAuthUser(req);
-  if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-
-  const { id } = params;
-  try {
-    const body = await req.json();
-    const student = await Student.findByIdAndUpdate(id, body, { new: true, runValidators: true });
-    if (!student) return NextResponse.json({ message: 'Student not found' }, { status: 404 });
-    return NextResponse.json(student);
-  } catch (error) {
-    return NextResponse.json({ message: error.message }, { status: 400 });
-  }
-}
-
-export async function DELETE(req, { params }) {
-  await dbConnect();
-  const user = await getAuthUser(req);
-  if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-
-  const { id } = params;
-  try {
-    const student = await Student.findByIdAndDelete(id);
-    if (!student) return NextResponse.json({ message: 'Student not found' }, { status: 404 });
-    return NextResponse.json({ message: 'Deleted successfully' });
-  } catch (error) {
-    return NextResponse.json({ message: 'Server error' }, { status: 500 });
-  }
-}

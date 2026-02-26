@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -15,14 +15,14 @@ export default function StudentDetail() {
 
   useEffect(() => {
     fetchStudent();
-  }, [id]);
+  }, [id, fetchStudent]);
 
-  const fetchStudent = async () => {
+  const fetchStudent = useCallback(async () => {
     const res = await fetch(`/api/students/${id}`);
     const data = await res.json();
     setStudent(data);
     setFormData(data);
-  };
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

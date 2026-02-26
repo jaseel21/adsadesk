@@ -10,12 +10,13 @@ async function getAuthUser(req) {
 }
 
 export async function GET(req, { params }) {
+  const { id } = await params;
   await dbConnect();
   const user = await getAuthUser(req);
   if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
   try {
-    const student = await Student.findById(params.id);
+    const student = await Student.findById(id);
     if (!student) return NextResponse.json({ message: 'Student not found' }, { status: 404 });
     return NextResponse.json(student);
   } catch (error) {
@@ -24,13 +25,14 @@ export async function GET(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
+  const { id } = await params;
   await dbConnect();
   const user = await getAuthUser(req);
   if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
   try {
     const body = await req.json();
-    const student = await Student.findByIdAndUpdate(params.id, body, { new: true, runValidators: true });
+    const student = await Student.findByIdAndUpdate(id, body, { new: true, runValidators: true });
     if (!student) return NextResponse.json({ message: 'Student not found' }, { status: 404 });
     return NextResponse.json(student);
   } catch (error) {
@@ -39,12 +41,13 @@ export async function PUT(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
+  const { id } = await params;
   await dbConnect();
   const user = await getAuthUser(req);
   if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
   try {
-    const student = await Student.findByIdAndDelete(params.id);
+    const student = await Student.findByIdAndDelete(id);
     if (!student) return NextResponse.json({ message: 'Student not found' }, { status: 404 });
     return NextResponse.json({ message: 'Deleted successfully' });
   } catch (error) {

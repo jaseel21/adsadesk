@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -11,9 +11,9 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchStudents();
-  }, [search]);
+  }, [search, fetchStudents]);
 
-  const fetchStudents = async () => {
+  const fetchStudents = useCallback(async () => {
     try {
       const res = await fetch(`/api/students?q=${encodeURIComponent(search)}`);
       if (!res.ok) throw new Error('Failed to fetch');
@@ -25,7 +25,7 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search, router]);
 
   const handleLogout = () => {
     document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
@@ -236,7 +236,7 @@ export default function Dashboard() {
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2">No students found</h3>
             <p className="text-slate-500 text-center max-w-sm">
-              We couldn't find any students matching your search. Try a different term or register a new student.
+              We couldn&apos;t find any students matching your search. Try a different term or register a new student.
             </p>
             <Link
               href="/register"
