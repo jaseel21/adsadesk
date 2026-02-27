@@ -9,10 +9,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    fetchStudents();
-  }, [search, fetchStudents]);
-
   const fetchStudents = useCallback(async () => {
     try {
       const res = await fetch(`/api/students?q=${encodeURIComponent(search)}`);
@@ -30,6 +26,10 @@ export default function Dashboard() {
       setLoading(false);
     }
   }, [search, router]);
+
+  useEffect(() => {
+    fetchStudents();
+  }, [search, fetchStudents]);
 
   const handleLogout = () => {
     document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';

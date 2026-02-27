@@ -13,10 +13,6 @@ export default function StudentDetail() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
-    fetchStudent();
-  }, [id, fetchStudent]);
-
   const fetchStudent = useCallback(async () => {
     try {
       const res = await fetch(`/api/students/${id}`);
@@ -33,6 +29,10 @@ export default function StudentDetail() {
       router.push('/login');
     }
   }, [id, router]);
+
+  useEffect(() => {
+    fetchStudent();
+  }, [id, fetchStudent]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
