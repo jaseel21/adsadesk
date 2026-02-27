@@ -18,9 +18,13 @@ export default function Dashboard() {
       const res = await fetch(`/api/students?q=${encodeURIComponent(search)}`);
       if (!res.ok) throw new Error('Failed to fetch');
       const data = await res.json();
-      setStudents(data);
+      if (Array.isArray(data)) {
+        setStudents(data);
+      } else {
+        throw new Error(data.message || 'Invalid data format');
+      }
     } catch (error) {
-      console.error(error);
+      console.error('Fetch error:', error);
       router.push('/login');
     } finally {
       setLoading(false);

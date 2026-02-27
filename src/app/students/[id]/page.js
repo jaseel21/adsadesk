@@ -18,11 +18,21 @@ export default function StudentDetail() {
   }, [id, fetchStudent]);
 
   const fetchStudent = useCallback(async () => {
-    const res = await fetch(`/api/students/${id}`);
-    const data = await res.json();
-    setStudent(data);
-    setFormData(data);
-  }, [id]);
+    try {
+      const res = await fetch(`/api/students/${id}`);
+      const data = await res.json();
+      if (res.ok && data && !data.message) {
+        setStudent(data);
+        setFormData(data);
+      } else {
+        console.error('API Error:', data.message);
+        router.push('/login');
+      }
+    } catch (err) {
+      console.error('Fetch error:', err);
+      router.push('/login');
+    }
+  }, [id, router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -134,6 +144,8 @@ export default function StudentDetail() {
     }
   };
 
+  const status = student.status?.toLowerCase() || '';
+
   return (
     <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 lg:p-8">
       <div className="max-w-4xl mx-auto">
@@ -148,7 +160,7 @@ export default function StudentDetail() {
             </Link>
             <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
               {student.name}
-              {!editing && (
+              {!editing && student.status && (
                 <span className={`text-xs px-2.5 py-1 rounded-full border font-semibold ${getStatusColor(student.status)}`}>
                   {student.status.toUpperCase()}
                 </span>
@@ -251,7 +263,7 @@ export default function StudentDetail() {
                       </select>
                     ) : (
                       <p className="font-semibold text-slate-900 flex items-center">
-                        <span className={`w-2 h-2 rounded-full mr-2 ${student.status.toLowerCase() === 'active' ? 'bg-green-500' : student.status.toLowerCase() === 'moved' ? 'bg-amber-500' : 'bg-blue-500'}`}></span>
+                        <span className={`w-2 h-2 rounded-full mr-2 ${status === 'active' ? 'bg-green-500' : status === 'moved' ? 'bg-amber-500' : 'bg-blue-500'}`}></span>
                         {student.status}
                       </p>
                     )}
