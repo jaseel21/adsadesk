@@ -5,16 +5,8 @@ import { getToken, verifyToken } from '../../../lib/auth';
 
 
 
-async function getAuthUser(req) {
-  const token = getToken();
-  if (!token) return null;
-  return verifyToken(token);
-}
-
 export async function GET(req) {
   await dbConnect();
-  const user = await getAuthUser(req);
-  if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q');
@@ -38,10 +30,10 @@ export async function GET(req) {
           { place: { $regex: q, $options: 'i' } },
           { address: { $regex: q, $options: 'i' } },
           { phone: { $regex: q, $options: 'i' } },
-          { fatherName: { $regex: q, $options: 'i' } },
-          { fatherPhone: { $regex: q, $options: 'i' } },
-          { 'education.year': { $regex: q, $options: 'i' } },
-          { 'education.university': { $regex: q, $options: 'i' } },
+          { guardianName: { $regex: q, $options: 'i' } },
+          { guardianPhone: { $regex: q, $options: 'i' } },
+          { school: { $regex: q, $options: 'i' } },
+          { course: { $regex: q, $options: 'i' } },
         ],
       };
     }
@@ -55,8 +47,6 @@ export async function GET(req) {
 
 export async function POST(req) {
   await dbConnect();
-  const user = await getAuthUser(req);
-  if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
   try {
     const body = await req.json();

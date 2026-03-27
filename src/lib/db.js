@@ -22,11 +22,29 @@ async function dbConnect() {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
+    cached.promise = mongoose.connect(MONGODB_URI, opts)
+      .then((mongoose) => {
+        return mongoose;
+      })
+      .catch((error) => {
+        if (error.name === 'MongooseServerSelectionError') {
+          console.error('\x1b[31m%s\x1b[0m', '---------------------------------------------------------');
+          console.error('\x1b[31m%s\x1b[0m', 'DATABASE CONNECTION ERROR: IP WHITELIST ISSUE SUSPECTED');
+          console.error('\x1b[31m%s\x1b[0m', 'Please ensure your current IP address is whitelisted in');
+          console.error('\x1b[31m%s\x1b[0m', 'MongoDB Atlas: https://www.mongodb.com/docs/atlas/security-whitelist/');
+          console.error('\x1b[31m%s\x1b[0m', '---------------------------------------------------------');
+        }
+        cached.promise = null;
+        throw error;
+      });
   }
-  cached.conn = await cached.promise;
+  
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
+  }
   return cached.conn;
 }
 

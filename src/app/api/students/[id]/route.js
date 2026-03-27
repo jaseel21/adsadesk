@@ -3,17 +3,9 @@ import dbConnect from '../../../../lib/db';
 import Student from '../../../../models/Student';
 import { getToken, verifyToken } from '../../../../lib/auth';
 
-async function getAuthUser(req) {
-  const token = getToken();
-  if (!token) return null;
-  return verifyToken(token);
-}
-
 export async function GET(req, { params }) {
   const { id } = await params;
   await dbConnect();
-  const user = await getAuthUser(req);
-  if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
   try {
     const student = await Student.findById(id);
@@ -27,8 +19,6 @@ export async function GET(req, { params }) {
 export async function PUT(req, { params }) {
   const { id } = await params;
   await dbConnect();
-  const user = await getAuthUser(req);
-  if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
   try {
     const body = await req.json();
@@ -43,8 +33,6 @@ export async function PUT(req, { params }) {
 export async function DELETE(req, { params }) {
   const { id } = await params;
   await dbConnect();
-  const user = await getAuthUser(req);
-  if (!user) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
   try {
     const student = await Student.findByIdAndDelete(id);
