@@ -6,7 +6,7 @@ import { getCookie } from 'cookies-next';
 const ALLOWED_ORIGINS = [
   'https://adsa-desk.web.app',
   'https://adsa-desk.firebaseapp.com',
-  
+
   'http://localhost:5173', // Vite default dev port
   'http://localhost:3000', // Next.js default dev port
 ];
